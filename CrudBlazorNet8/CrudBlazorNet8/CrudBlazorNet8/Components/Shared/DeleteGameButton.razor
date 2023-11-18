@@ -1,0 +1,16 @@
+﻿@inject NavigationManager NavigationManager
+@rendermode InteractiveAuto
+
+<button @onclick="DeleteGame" class="btn btn-primary">X</button>
+
+
+@code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    void DeleteGame()
+    {
+        NavigationManager.NavigateTo($"/delete-game/{Id}");
+    }
+}

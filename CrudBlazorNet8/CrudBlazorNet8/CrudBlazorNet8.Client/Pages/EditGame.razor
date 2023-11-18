@@ -1,0 +1,55 @@
+﻿@page "/edit-game"
+@page "/edit-game/{id:guid}"
+@inject IGameService GameService
+@inject NavigationManager NavigationManager
+@rendermode InteractiveAuto
+
+@if(Id is null)
+{
+    <h3>EditGame</h3>
+}
+else
+{
+    <h3>Delete @game.Name</h3>
+}
+<EditForm Model="game" OnSubmit="HandleSubmit" FormName="editGame">
+    <label>Name</label>
+    <InputText @bind-Value="game.Name">@game.Name</InputText>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+    @code {
+
+    [Parameter]
+    public Guid? Id { get; set; }
+    Game game { get; set; } = new Game
+        {
+            Name = string.Empty
+        };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id is not null)
+        {
+            game = await GameService.GetGameById((Guid)Id);
+        }
+    }
+
+    async Task HandleSubmit()
+    {
+        if(Id is null)
+        {
+            await GameService.AddGame(game);
+        }
+    }
+
+    async Task DeleteGame()
+    {
+        if (Id is not null)
+        {
+            await GameService.DeleteGameById((Guid)Id);
+            NavigationManager.NavigateTo("/games"); // not refreshing.. fix later
+        }
+    }
+}
+
